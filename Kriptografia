@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Vigenère Cipher App</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    input, button {
+      padding: 12px;
+      margin: 8px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+    }
+
+    input {
+      width: 60%;
+      max-width: 400px;
+    }
+
+    button {
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .encrypt {
+      background: #22c55e;
+      color: white;
+    }
+
+    .decrypt {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .box {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      min-height: 60px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .result {
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🔐 Vigenère Cipher</h1>
+  <p>Kriptografi me çelës (Projekt)</p>
+
+  <input id="text" placeholder="Shkruaj mesazhin..."><br>
+  <input id="key" placeholder="Key (p.sh. ALBANIA)"><br>
+
+  <button class="encrypt" onclick="encrypt()">Enkripto</button>
+  <button class="decrypt" onclick="decrypt()">Dekripto</button>
+
+  <div class="box">
+    <h3>Rezultati:</h3>
+    <p id="result" class="result"></p>
+  </div>
+
+<script>
+function vigenere(text, key, decrypt = false) {
+  if (!key) return "⚠ Vendos një key!";
+
+  let result = "";
+  key = key.toUpperCase().replace(/[^A-Z]/g, "");
+
+  if (key.length === 0) return "⚠ Key jo valid!";
+
+  let kIndex = 0;
+
+  for (let i = 0; i < text.length; i++) {
+    let c = text[i];
+    let code = text.charCodeAt(i);
+
+    if (/[a-z]/i.test(c)) {
+      let shift = key.charCodeAt(kIndex % key.length) - 65;
+      if (decrypt) shift = -shift;
+
+      if (code >= 65 && code <= 90) {
+        c = String.fromCharCode((code - 65 + shift + 26) % 26 + 65);
+        kIndex++;
+      } 
+      else if (code >= 97 && code <= 122) {
+        c = String.fromCharCode((code - 97 + shift + 26) % 26 + 97);
+        kIndex++;
+      }
+    }
+
+    result += c;
+  }
+
+  return result;
+}
+
+function encrypt() {
+  let text = document.getElementById("text").value;
+  let key = document.getElementById("key").value;
+  document.getElementById("result").innerText = vigenere(text, key, false);
+}
+
+function decrypt() {
+  let text = document.getElementById("text").value;
+  let key = document.getElementById("key").value;
+  document.getElementById("result").innerText = vigenere(text, key, true);
+}
+</script>
+
+</body>
+</html>
